@@ -10,4 +10,6 @@ public class BookingRulesOptions
 
     [Range(1, 365)]
     public int BookingHorizonDays { get; init; } = 90;
+
+    public string OfficeTimeZone { get; init; } = "Europe/Vilnius";
 }
