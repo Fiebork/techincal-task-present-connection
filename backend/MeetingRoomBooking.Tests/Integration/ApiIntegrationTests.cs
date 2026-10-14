@@ -150,7 +150,7 @@ public sealed class ApiIntegrationTests : IAsyncLifetime
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(3, report.Count);
-        Assert.Equal(1, report.Single(item => item.RoomId == 1).ReservationCount);
+        Assert.Equal(0, report.Single(item => item.RoomId == 1).ReservationCount);
         Assert.Equal(0, report.Single(item => item.RoomId == 1).UsedReservationCount);
         Assert.Equal(0, report.Single(item => item.RoomId == 1).UsageRate);
     }

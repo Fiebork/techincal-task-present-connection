@@ -5,13 +5,15 @@ namespace MeetingRoomBooking.Api.Services;
 
 public sealed class ReportService(
     IRoomRepository roomRepository,
-    IReservationRepository reservationRepository) : IReportService
+    IReservationRepository reservationRepository,
+    TimeProvider timeProvider) : IReportService
 {
     public async Task<IReadOnlyList<RoomUsageResponse>> GetRoomUsageAsync(
         CancellationToken cancellationToken)
     {
         var rooms = await roomRepository.GetAllAsync(cancellationToken: cancellationToken);
         var reservations = await reservationRepository.GetAllAsync(cancellationToken: cancellationToken);
+        var now = timeProvider.GetUtcNow();
 
         return rooms
             .Select(room =>
@@ -19,6 +21,7 @@ public sealed class ReportService(
                 var roomReservations = reservations
                     .Where(reservation => reservation.RoomId == room.Id)
                     .Where(reservation => reservation.Status != Models.Enums.ReservationStatus.Cancelled)
+                    .Where(reservation => reservation.EndDate <= now)
                     .ToList();
                 var usedReservationCount = roomReservations.Count(
                     reservation => reservation.Status == Models.Enums.ReservationStatus.Completed);
